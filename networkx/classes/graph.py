@@ -8,6 +8,7 @@
 # Author:  Aric Hagberg (hagberg@lanl.gov),
 #          Pieter Swart (swart@lanl.gov),
 #          Dan Schult(dschult@colgate.edu)
+#          Wenping Guo(winpng@gmail.com)
 """Base class for undirected graphs.
 
 The Graph class allows any hashable object as a node
@@ -20,6 +21,7 @@ For directed graphs see DiGraph and MultiDiGraph.
 from __future__ import division
 import warnings
 from copy import deepcopy
+# FIXME
 from collections import Mapping
 
 import networkx as nx
@@ -28,6 +30,14 @@ from networkx.classes.reportviews import NodeView, EdgeView, DegreeView
 from networkx.exception import NetworkXError
 import networkx.convert as convert
 from networkx.utils import pairwise
+# FIXME
+
+# the root of all Exceptions
+class NetworkXException(Exception):
+    """Base class for exceptions in NetworkX."""
+
+class NetworkXError(NetworkXException):
+    """Exception for a serious error in NetworkX"""
 
 
 class Graph(object):
@@ -46,6 +56,7 @@ class Graph(object):
     key/value attributes.
 
     Parameters
+    # FIXME
     ----------
     data : input graph
         Data to initialize graph. If data=None (default) an empty
@@ -307,7 +318,7 @@ class Graph(object):
         self.graph = {}   # dictionary for graph attributes
         self._node = ndf()  # empty node attribute dict
         self._adj = self.adjlist_outer_dict_factory()  # empty adjacency dict
-        # attempt to load graph with data
+        # attempt to load graph with data # FIXME
         if data is not None:
             convert.to_networkx_graph(data, create_using=self)
         # load graph attributes (must be after convert)
