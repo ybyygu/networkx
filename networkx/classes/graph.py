@@ -304,7 +304,7 @@ class Graph(object):
         self.graph = {}   # dictionary for graph attributes
         self._node = ndf()  # empty node attribute dict
         self._adj = self.adjlist_outer_dict_factory()  # empty adjacency dict
-        # attempt to load graph with data # FIXME
+        # attempt to load graph with data
         if data is not None:
             from .convert import to_networkx_graph
             to_networkx_graph(data, create_using=self)
@@ -1523,7 +1523,7 @@ class Graph(object):
         """
         if as_view is True:
             # return nx.graphviews.GraphView(self)
-            return GraphView(self)
+            raise NetworkXError("dropped for portability.")
         # deepcopy when not a view
         G = Graph()
         G.graph.update(deepcopy(self.graph))
@@ -1570,7 +1570,7 @@ class Graph(object):
         >>> list(H.edges)
         [(0, 1), (1, 2)]
         """
-        raise NetworkXError("dropped for portability")
+        raise NetworkXError("dropped for portability.")
 
         # induced_nodes = nx.filters.show_nodes(self.nbunch_iter(nodes))
         # # SubGraph = nx.graphviews.SubGraph
