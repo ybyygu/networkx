@@ -7,7 +7,7 @@
 #
 # Author:  Aric Hagberg (hagberg@lanl.gov),
 #          Pieter Swart (swart@lanl.gov),
-#          Dan Schult(dschult@colgate.edu)
+#          Dan Schult(dschult@colgate.edu),
 #          Wenping Guo(winpng@gmail.com)
 """Base class for undirected graphs.
 
@@ -21,24 +21,11 @@ For directed graphs see DiGraph and MultiDiGraph.
 from __future__ import division
 import warnings
 from copy import deepcopy
-# FIXME
 from collections import Mapping
 
-import networkx as nx
-from networkx.classes.coreviews import AtlasView, AdjacencyView
-from networkx.classes.reportviews import NodeView, EdgeView, DegreeView
-from networkx.exception import NetworkXError
-import networkx.convert as convert
-from networkx.utils import pairwise
-# FIXME
-
-# the root of all Exceptions
-class NetworkXException(Exception):
-    """Base class for exceptions in NetworkX."""
-
-class NetworkXError(NetworkXException):
-    """Exception for a serious error in NetworkX"""
-
+from .coreviews import AtlasView, AdjacencyView
+from .reportviews import NodeView, EdgeView, DegreeView
+from .exception import NetworkXError
 
 class Graph(object):
     """
@@ -56,7 +43,6 @@ class Graph(object):
     key/value attributes.
 
     Parameters
-    # FIXME
     ----------
     data : input graph
         Data to initialize graph. If data=None (default) an empty
@@ -320,7 +306,8 @@ class Graph(object):
         self._adj = self.adjlist_outer_dict_factory()  # empty adjacency dict
         # attempt to load graph with data # FIXME
         if data is not None:
-            convert.to_networkx_graph(data, create_using=self)
+            from .convert import to_networkx_graph
+            to_networkx_graph(data, create_using=self)
         # load graph attributes (must be after convert)
         self.graph.update(attr)
 
@@ -733,39 +720,39 @@ class Graph(object):
         return nodes
 
     # for backwards compatibility with 1.x, will be removed for 3.x
-    node = nodes
+    # node = nodes
 
-    def add_path(self, nodes, **attr):
-        msg = "add_path is deprecated. Use nx.add_path instead."
-        warnings.warn(msg, DeprecationWarning)
-        return nx.add_path(self, nodes, **attr)
+    # def add_path(self, nodes, **attr):
+    #     msg = "add_path is deprecated. Use nx.add_path instead."
+    #     warnings.warn(msg, DeprecationWarning)
+    #     return nx.add_path(self, nodes, **attr)
 
-    def add_cycle(self, nodes, **attr):
-        msg = "add_cycle is deprecated. Use nx.add_cycle instead."
-        warnings.warn(msg, DeprecationWarning)
-        return nx.add_cycle(self, nodes, **attr)
+    # def add_cycle(self, nodes, **attr):
+    #     msg = "add_cycle is deprecated. Use nx.add_cycle instead."
+    #     warnings.warn(msg, DeprecationWarning)
+    #     return nx.add_cycle(self, nodes, **attr)
 
-    def add_star(self, nodes, **attr):
-        msg = "add_star is deprecated. Use nx.add_star instead."
-        warnings.warn(msg, DeprecationWarning)
-        return nx.add_star(self, nodes, **attr)
+    # def add_star(self, nodes, **attr):
+    #     msg = "add_star is deprecated. Use nx.add_star instead."
+    #     warnings.warn(msg, DeprecationWarning)
+    #     return nx.add_star(self, nodes, **attr)
 
-    def nodes_with_selfloops(self):
-        msg = "nodes_with_selfloops is deprecated." \
-              "Use nx.nodes_with_selfloops instead."
-        warnings.warn(msg, DeprecationWarning)
-        return nx.nodes_with_selfloops(self)
+    # def nodes_with_selfloops(self):
+    #     msg = "nodes_with_selfloops is deprecated." \
+    #           "Use nx.nodes_with_selfloops instead."
+    #     warnings.warn(msg, DeprecationWarning)
+    #     return nx.nodes_with_selfloops(self)
 
-    def number_of_selfloops(self):
-        msg = "number_of_selfloops is deprecated." \
-              "Use nx.number_of_selfloops instead."
-        warnings.warn(msg, DeprecationWarning)
-        return nx.number_of_selfloops(self)
+    # def number_of_selfloops(self):
+    #     msg = "number_of_selfloops is deprecated." \
+    #           "Use nx.number_of_selfloops instead."
+    #     warnings.warn(msg, DeprecationWarning)
+    #     return nx.number_of_selfloops(self)
 
-    def selfloop_edges(self, data=False, keys=False, default=None):
-        msg = "selfloop_edges is deprecated. Use nx.selfloop_edges instead."
-        warnings.warn(msg, DeprecationWarning)
-        return nx.selfloop_edges(self, data=False, keys=False, default=None)
+    # def selfloop_edges(self, data=False, keys=False, default=None):
+    #     msg = "selfloop_edges is deprecated. Use nx.selfloop_edges instead."
+    #     warnings.warn(msg, DeprecationWarning)
+    #     return nx.selfloop_edges(self, data=False, keys=False, default=None)
     # Done with backward compatibility methods for 1.x
 
     def number_of_nodes(self):
@@ -1424,7 +1411,8 @@ class Graph(object):
 
         """
         if as_view is True:
-            return nx.graphviews.GraphView(self)
+            raise NetworkXError("dropped for portability.")
+            # return nx.graphviews.GraphView(self)
         G = self.fresh_copy()
         G.graph.update(self.graph)
         G.add_nodes_from((n, d.copy()) for n, d in self._node.items())
@@ -1475,17 +1463,20 @@ class Graph(object):
         >>> list(H.edges)
         [(0, 1)]
         """
-        if as_view is True:
-            return nx.graphviews.DiGraphView(self)
-        # deepcopy when not a view
-        from networkx import DiGraph
-        G = DiGraph()
-        G.graph.update(deepcopy(self.graph))
-        G.add_nodes_from((n, deepcopy(d)) for n, d in self._node.items())
-        G.add_edges_from((u, v, deepcopy(data))
-                         for u, nbrs in self.adj.items()
-                         for v, data in nbrs.items())
-        return G
+        raise NetworkXError("dropped for portability.")
+
+        # if as_view is True:
+        #     # return nx.graphviews.DiGraphView(self)
+        #     return DiGraphView(self)
+        # # deepcopy when not a view
+        # from networkx import DiGraph
+        # G = DiGraph()
+        # G.graph.update(deepcopy(self.graph))
+        # G.add_nodes_from((n, deepcopy(d)) for n, d in self._node.items())
+        # G.add_edges_from((u, v, deepcopy(data))
+        #                  for u, nbrs in self.adj.items()
+        #                  for v, data in nbrs.items())
+        # return G
 
     def to_undirected(self, as_view=False):
         """Return an undirected copy of the graph.
@@ -1531,7 +1522,8 @@ class Graph(object):
         [(0, 1)]
         """
         if as_view is True:
-            return nx.graphviews.GraphView(self)
+            # return nx.graphviews.GraphView(self)
+            return GraphView(self)
         # deepcopy when not a view
         G = Graph()
         G.graph.update(deepcopy(self.graph))
@@ -1578,12 +1570,15 @@ class Graph(object):
         >>> list(H.edges)
         [(0, 1), (1, 2)]
         """
-        induced_nodes = nx.filters.show_nodes(self.nbunch_iter(nodes))
-        SubGraph = nx.graphviews.SubGraph
-        # if already a subgraph, don't make a chain
-        if hasattr(self, '_NODE_OK'):
-            return SubGraph(self._graph, induced_nodes, self._EDGE_OK)
-        return SubGraph(self, induced_nodes)
+        raise NetworkXError("dropped for portability")
+
+        # induced_nodes = nx.filters.show_nodes(self.nbunch_iter(nodes))
+        # # SubGraph = nx.graphviews.SubGraph
+        # SubGraph = graphviews.SubGraph
+        # # if already a subgraph, don't make a chain
+        # if hasattr(self, '_NODE_OK'):
+        #     return SubGraph(self._graph, induced_nodes, self._EDGE_OK)
+        # return SubGraph(self, induced_nodes)
 
     def edge_subgraph(self, edges):
         """Returns the subgraph induced by the specified edges.
@@ -1623,7 +1618,8 @@ class Graph(object):
         [(0, 1), (3, 4)]
 
         """
-        return nx.edge_subgraph(self, edges)
+        raise NetworkXError("dropped for portability.")
+        # return nx.edge_subgraph(self, edges)
 
     def size(self, weight=None):
         """Return the number of edges or total of all edge weights.

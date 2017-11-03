@@ -22,7 +22,10 @@ nx_agraph, nx_pydot
 #    All rights reserved.
 #    BSD license.
 import warnings
-import networkx as nx
+
+from .core import Graph
+from .exception import NetworkXError
+
 __author__ = """\n""".join(['Aric Hagberg <aric.hagberg@gmail.com>',
                             'Pieter Swart (swart@lanl.gov)',
                             'Dan Schult(dschult@colgate.edu)'])
@@ -41,7 +44,7 @@ def _prep_create_using(create_using):
 
     """
     if create_using is None:
-        return nx.Graph()
+        return Graph()
     try:
         create_using.clear()
     except:
@@ -99,14 +102,14 @@ def to_networkx_graph(data, create_using=None, multigraph_input=False):
                 result._node.update((n, dd.copy()) for n, dd in data.nodes.items())
             return result
         except:
-            raise nx.NetworkXError("Input is not a correct NetworkX graph.")
+            raise NetworkXError("Input is not a correct NetworkX graph.")
 
-    # pygraphviz  agraph
-    if hasattr(data, "is_strict"):
-        try:
-            return nx.nx_agraph.from_agraph(data, create_using=create_using)
-        except:
-            raise nx.NetworkXError("Input is not a correct pygraphviz graph.")
+    # # pygraphviz  agraph
+    # if hasattr(data, "is_strict"):
+    #     try:
+    #         return nx.nx_agraph.from_agraph(data, create_using=create_using)
+    #     except:
+    #         raise nx.NetworkXError("Input is not a correct pygraphviz graph.")
 
     # dict of dicts/lists
     if isinstance(data, dict):
@@ -126,56 +129,55 @@ def to_networkx_graph(data, create_using=None, multigraph_input=False):
         try:
             return from_edgelist(data, create_using=create_using)
         except:
-            raise nx.NetworkXError("Input is not a valid edge list")
+            raise NetworkXError("Input is not a valid edge list")
 
     # Pandas DataFrame
-    try:
-        import pandas as pd
-        if isinstance(data, pd.DataFrame):
-            if data.shape[0] == data.shape[1]:
-                try:
-                    return nx.from_pandas_adjacency(data, create_using=create_using)
-                except:
-                    msg = "Input is not a correct Pandas DataFrame adjacency matrix."
-                    raise nx.NetworkXError(msg)
-            else:
-                try:
-                    return nx.from_pandas_edgelist(data, edge_attr=True, create_using=create_using)
-                except:
-                    msg = "Input is not a correct Pandas DataFrame edge-list."
-                    raise nx.NetworkXError(msg)
-    except ImportError:
-        msg = 'pandas not found, skipping conversion test.'
-        warnings.warn(msg, ImportWarning)
+    # try:
+    #     import pandas as pd
+    #     if isinstance(data, pd.DataFrame):
+    #         if data.shape[0] == data.shape[1]:
+    #             try:
+    #                 return nx.from_pandas_adjacency(data, create_using=create_using)
+    #             except:
+    #                 msg = "Input is not a correct Pandas DataFrame adjacency matrix."
+    #                 raise nx.NetworkXError(msg)
+    #         else:
+    #             try:
+    #                 return nx.from_pandas_edgelist(data, edge_attr=True, create_using=create_using)
+    #             except:
+    #                 msg = "Input is not a correct Pandas DataFrame edge-list."
+    #                 raise nx.NetworkXError(msg)
+    # except ImportError:
+    #     msg = 'pandas not found, skipping conversion test.'
+    #     warnings.warn(msg, ImportWarning)
 
     # numpy matrix or ndarray
-    try:
-        import numpy
-        if isinstance(data, (numpy.matrix, numpy.ndarray)):
-            try:
-                return nx.from_numpy_matrix(data, create_using=create_using)
-            except:
-                raise nx.NetworkXError(
-                    "Input is not a correct numpy matrix or array.")
-    except ImportError:
-        warnings.warn('numpy not found, skipping conversion test.',
-                      ImportWarning)
+    # try:
+    #     import numpy
+    #     if isinstance(data, (numpy.matrix, numpy.ndarray)):
+    #         try:
+    #             return nx.from_numpy_matrix(data, create_using=create_using)
+    #         except:
+    #             raise nx.NetworkXError(
+    #                 "Input is not a correct numpy matrix or array.")
+    # except ImportError:
+    #     warnings.warn('numpy not found, skipping conversion test.',
+    #                   ImportWarning)
 
     # scipy sparse matrix - any format
-    try:
-        import scipy
-        if hasattr(data, "format"):
-            try:
-                return nx.from_scipy_sparse_matrix(data, create_using=create_using)
-            except:
-                raise nx.NetworkXError(
-                    "Input is not a correct scipy sparse matrix type.")
-    except ImportError:
-        warnings.warn('scipy not found, skipping conversion test.',
-                      ImportWarning)
+    # try:
+    #     import scipy
+    #     if hasattr(data, "format"):
+    #         try:
+    #             return nx.from_scipy_sparse_matrix(data, create_using=create_using)
+    #         except:
+    #             raise nx.NetworkXError(
+    #                 "Input is not a correct scipy sparse matrix type.")
+    # except ImportError:
+    #     warnings.warn('scipy not found, skipping conversion test.',
+    #                   ImportWarning)
 
-    raise nx.NetworkXError(
-        "Input is not a known data type for conversion.")
+    raise NetworkXError("Input is not a known data type for conversion or dropped for portability.")
 
 
 def to_dict_of_lists(G, nodelist=None):

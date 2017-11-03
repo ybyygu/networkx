@@ -11,7 +11,7 @@
 """
 """
 from collections import Mapping
-import networkx as nx
+from .exception import NetworkXError
 
 __all__ = ['AtlasView', 'AdjacencyView', 'MultiAdjacencyView',
            'UnionAtlas', 'UnionAdjacency',
@@ -264,7 +264,7 @@ class ReadOnlyGraph(object):
 
     def not_allowed(self, *args, **kwds):
         msg = "SubGraph Views are readonly. Mutations not allowed"
-        raise nx.NetworkXError(msg)
+        raise NetworkXError(msg)
 
     add_node = not_allowed
     remove_node = not_allowed
