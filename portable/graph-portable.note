@@ -4,6 +4,7 @@
 #+SETUPFILE: ~/Notes/coding.org
 
 * Memo
+** [2017-11-21 Tue] 将OrderedGraph类纳入graph.py
 ** [2017-11-03 Fri] 添加makefile, 方便其它项目中使用
 - 升级到2.0后, 依赖关系变复杂了. 如果把相关内容都放到graph.py里以后维护很麻烦.
 - 现在把相关的几个文件放到(symlink)portable/graph目录下, 当一个独立的模块来使用. 这样上游修改可以即时反映到graph目录里.
@@ -25,8 +26,9 @@ tar:
 :END:
 #+name: 508fbaf2-1e82-40d8-a9c3-7a1de32a38fe
 #+begin_src python
-  from .core import Graph
+  from .core import Graph, OrderedGraph
 #+end_src
+
 * Local variables
 # Local Variables:
 # mode: org
